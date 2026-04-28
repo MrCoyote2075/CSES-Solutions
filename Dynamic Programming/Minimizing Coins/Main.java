@@ -4,53 +4,46 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
-    public static Integer[][] dp;
+    public static Integer[] dp;
 
-    public static int rec(int lev, int x, int[] arr) {
+    public static int rec(int x, int[] arr) {
         if (x == 0)
             return 0;
 
-        if (lev == arr.length || x < 0)
-            return (int) 1e9;
-
-        if (dp[lev][x] != null)
-            return dp[lev][x];
-
         int ans = (int) 1e9;
 
-        // ans = Math.min(ans, rec(lev + 1, x % arr[lev], arr) + (x / arr[lev]));
-        ans = Math.min(ans, rec(lev, x - arr[lev], arr) + 1);
-        ans = Math.min(ans, rec(lev + 1, x, arr));
+        if (dp[x] != null)
+            return dp[x];
 
-        return dp[lev][x] = ans;
+        for (int coin : arr) {
+            if (x - coin >= 0)
+                ans = Math.min(ans, rec(x - coin, arr) + 1);
+        }
+
+        return dp[x] = ans;
     }
 
-    public static int iter(int x, int[] arr) {
+    public static int iter(int target, int[] arr) {
+        int[] memo = new int[target + 2];
 
+        for (int x = 1; x <= target; x++) {
+            int ans = (int) 1e9;
 
-        for(int i = arr.length - 1; i >= 0 ; )
+            for (int coin : arr) {
+                if (x - coin >= 0)
+                    ans = Math.min(ans, memo[x - coin] + 1);
+            }
 
-        // if (x == 0)
-        // return 0;
+            memo[x] = ans;
+        }
 
-        // if (lev == arr.length || x < 0)
-        // return (int) 1e9;
-
-        // if (dp[lev][x] != null)
-        // return dp[lev][x];
-
-        // int ans = (int) 1e9;
-
-        // // ans = Math.min(ans, rec(lev + 1, x % arr[lev], arr) + (x / arr[lev]));
-        // ans = Math.min(ans, rec(lev, x - arr[lev], arr) + 1);
-        // ans = Math.min(ans, rec(lev + 1, x, arr));
-
-        return 0;
+        return memo[target];
     }
 
     public static int solve(int[] arr, int x) {
-        dp = new Integer[arr.length][x + 1];
+        dp = new Integer[x + 2];
         Arrays.sort(arr);
+
         int l = -1, r = arr.length;
         while (++l < --r) {
             int temp = arr[l];
@@ -58,7 +51,8 @@ public class Main {
             arr[r] = temp;
         }
 
-        int ans = rec(0, x, arr);
+        // int ans = rec(x, arr);
+        int ans = iter(x, arr);
 
         return ans == (int) 1e9 ? -1 : ans;
     }
