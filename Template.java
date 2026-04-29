@@ -1,46 +1,65 @@
 
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
 
 public class Template {
-    static class FileReader {
-        BufferedReader br;
-        StringTokenizer st;
+    public static class UltraFastReader {
+        public final InputStream in = System.in;
+        public final byte[] buffer = new byte[1 << 16];
+        public int ptr = 0, len = 0;
 
-        public FileReader() {
-            br = new BufferedReader(new InputStreamReader(System.in));
+        public int read() throws Exception {
+            if (ptr >= len) {
+                ptr = 0;
+                len = in.read(buffer);
+                if (len <= 0)
+                    return -1;
+            }
+
+            return buffer[ptr++];
         }
 
-        public String next() throws IOException {
-            while (st == null || !st.hasMoreTokens())
-                st = new StringTokenizer(br.readLine());
+        public int nextInt() throws Exception {
+            int sign = 1, val = 0, c;
 
-            return st.nextToken();
-        }
+            do
+                c = read();
+            while (c <= ' ');
 
-        public int nextInt() throws IOException {
-            return Integer.parseInt(next());
+            if (c == '-') {
+                sign = -1;
+                c = read();
+            }
+
+            while (c > ' ') {
+                val = (val * 10) + (c - '0');
+                c = read();
+            }
+
+            return val * sign;
         }
     }
 
-    public static int solve(int n, int[] arr) {
+    public static int n;
+    public static int MAX = (int) 1e9;
+    public static int MIN = (int) -1e9;
+    public static long MOD = (long) 1e9 + 7;
+
+    public static int solve(int[] arr, int x) {
 
         return 0;
     }
 
     public static void main(String[] args) throws Exception {
-        FileReader fs = new FileReader();
-        PrintWriter out = new PrintWriter(System.out);
-
-        int n = fs.nextInt();
-
+        UltraFastReader in = new UltraFastReader();
+        n = in.nextInt();
+        int x = in.nextInt();
         int arr[] = new int[n];
-        for (int i = 0; i < n; i++)
-            arr[i] = fs.nextInt();
 
-        out.print(solve(n, arr));
+        for (int i = 0; i < n; i++) {
+            arr[i] = in.nextInt();
+        }
 
-        out.flush();
-        out.close();
+        System.out.println(solve(arr, x));
     }
+
 }
