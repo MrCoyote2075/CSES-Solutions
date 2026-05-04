@@ -4,6 +4,8 @@
 **Time limit:** 1.00 s  
 **Memory limit:** 512 MB  
 
+---
+
 ## Problem
 
 Your task is to count, for each integer \( k = 1, 2, .... , n \), the number of ways to place two knights on a \( k * k \) chessboard so that they do not attack each other.
