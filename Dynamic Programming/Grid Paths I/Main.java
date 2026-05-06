@@ -48,29 +48,38 @@ public class Main {
     }
 
     public static int n;
-    public static int MAX = (int) 1e9;
-    public static int MIN = (int) -1e9;
     public static int MOD = (int) 1e9 + 7;
 
+    // Raw Recursion without Optimization...
+    // Actual Solution Flow...
     public static int rec(int i, int j, char[][] grid) {
 
-        if (i == 0 && j == 0)
+        if (i == 0 && j == 0) // Base Condition...
             return 1;
 
         int ans = 0;
 
-        if (0 <= i - 1 && grid[i - 1][j] != '*')
+        if (0 <= i - 1 && grid[i - 1][j] != '*') { // Travel Down...
             ans += rec(i - 1, j, grid);
 
-        if (0 <= j - 1 && grid[i][j - 1] != '*')
+            if (ans >= MOD)
+                ans = ans - MOD;
+        }
+
+        if (0 <= j - 1 && grid[i][j - 1] != '*') { // Travel Right...
             ans += rec(i, j - 1, grid);
+
+            if (ans >= MOD)
+                ans = ans - MOD;
+        }
 
         return ans;
     }
 
+    // Recursion Based, 2D - DP (Memorization)...
     public static int memorization(int i, int j, char[][] grid, int[][] memo) {
 
-        if (i == 0 && j == 0)
+        if (i == 0 && j == 0) // Base Condition...
             return 1;
 
         if (memo[i][j] != -1)
@@ -78,68 +87,113 @@ public class Main {
 
         int ans = 0;
 
-        if (0 <= i - 1 && grid[i - 1][j] != '*') {
+        if (0 <= i - 1 && grid[i - 1][j] != '*') { // Travel Down...
             ans += memorization(i - 1, j, grid, memo);
 
             if (ans >= MOD)
                 ans = ans - MOD;
         }
 
-        if (0 <= j - 1 && grid[i][j - 1] != '*') {
+        if (0 <= j - 1 && grid[i][j - 1] != '*') { // Travel Right...
             ans += memorization(i, j - 1, grid, memo);
 
             if (ans >= MOD)
                 ans = ans - MOD;
         }
 
-        return memo[i][j] = ans;
+        return memo[i][j] = ans; // Memorization...
     }
 
-    public static int tabulation(char[][] grid, int[][] memo) {
+    // Iteration Based, Faster than Recursion...
+    public static int tabulation(char[][] grid) {
 
-        for (int i = 0; i < n; i++) {
+        int[][] memo = new int[n][n]; // 2D - DP...
+
+        for (int i = 0; i < n; i++) { // start with base Value (Base Condition = 0) -> end with Actual (problem = n).
             for (int j = 0; j < n; j++) {
 
-                if (i == 0 && j == 0) {
+                if (i == 0 && j == 0) { // Base Condition...
                     memo[0][0] = 1;
                     continue;
                 }
 
                 int ans = 0;
-                if (0 <= i - 1 && grid[i - 1][j] != '*') {
+                if (0 <= i - 1 && grid[i - 1][j] != '*') { // Travel Down...
                     ans += memo[i - 1][j];
 
                     if (ans >= MOD)
                         ans = ans - MOD;
                 }
 
-                if (0 <= j - 1 && grid[i][j - 1] != '*') {
+                if (0 <= j - 1 && grid[i][j - 1] != '*') { // Travel Right...
                     ans += memo[i][j - 1];
 
                     if (ans >= MOD)
                         ans = ans - MOD;
                 }
 
-                memo[i][j] = ans;
+                memo[i][j] = ans; // Memorization...
             }
         }
 
         return memo[n - 1][n - 1];
     }
 
+    // Space Optimized, Iteration...
+    // Reusing the same Array Everytime...
+    public static int optimizedTabulation(char[][] grid) {
+
+        int[] memo = new int[n]; // 1D - DP...
+
+        for (int i = 0; i < n; i++) { // start with base Value (Base Condition = 0) -> end with Actual (problem = n).
+            for (int j = 0; j < n; j++) {
+
+                if (i == 0 && j == 0) { // Base Condition...
+                    memo[0] = 1;
+                    continue;
+                }
+
+                int ans = 0;
+                if (0 <= i - 1 && grid[i - 1][j] != '*') { // Travel Down...
+                    ans += memo[j];
+
+                    if (ans >= MOD)
+                        ans = ans - MOD;
+                }
+
+                if (0 <= j - 1 && grid[i][j - 1] != '*') { // Travel Right...
+                    ans += memo[j - 1];
+
+                    if (ans >= MOD)
+                        ans = ans - MOD;
+                }
+
+                memo[j] = ans; // Memorization...
+            }
+        }
+
+        return memo[n - 1];
+    }
+
     public static int solve(char[][] grid) {
         if (grid[0][0] == '*' || grid[n - 1][n - 1] == '*')
             return 0;
 
+        // // 1 :
         // return rec(n - 1, n - 1, grid);
 
-        int[][] memo = new int[n][n];
+        // // 2 :
+        // int[][] memo = new int[n][n];
         // for (int[] arr : memo)
         // Arrays.fill(arr, -1);
 
         // return (int) memorization(n - 1, n - 1, grid, memo);
 
-        return tabulation(grid, memo);
+        // // 3 :
+        // return tabulation(grid);
+
+        // 4 :
+        return optimizedTabulation(grid);
     }
 
     public static void main(String[] args) throws Exception {
@@ -153,5 +207,4 @@ public class Main {
 
         System.out.println(solve(grid));
     }
-
 }
