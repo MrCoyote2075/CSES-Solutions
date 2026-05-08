@@ -111,28 +111,25 @@ public class Main {
         long[] arr = new long[n + 1];
 
         arr[1] = x;
-        for (int i = 2; i <= n; i++)
-            arr[i] = ((a * arr[i - 1]) + b) % c;
+        for (int i = 2; i <= n; i++) {
+            arr[i] = ((a * arr[i - 1]) + b);
 
-        long sum = 0;
+            if (c <= arr[i])
+                arr[i] %= c;
 
-        for (int i = 1; i <= k && i <= n; i++)
-            sum += arr[i];
-
-        long xor = sum;
-
-        int l = 1;
-        int r = k + 1;
-
-        for (; r <= n; r++, l++) {
-            sum -= arr[l];
-            sum += arr[r];
-
-            // System.out.print(sum + " ");
-            xor ^= sum;
         }
 
-        // System.out.println(Arrays.toString(arr));
+        long sum = 0;
+        long xor = 0;
+
+        for (int l = 1, r = 1; r <= n; r++) {
+            sum += arr[r];
+
+            if (k == r - l + 1) {
+                xor ^= sum;
+                sum -= arr[l++];
+            }
+        }
 
         return xor;
     }
