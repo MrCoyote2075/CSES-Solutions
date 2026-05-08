@@ -1,4 +1,4 @@
-# Book Shop
+# [Book Shop][1]
 
 * Time limit: 1.00 s
 * Memory limit: 512 MB
